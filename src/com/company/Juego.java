@@ -6,13 +6,18 @@ public class Juego {
     Tablero tablero;
     int id;
     boolean finished, correctplay;
-    int[][] array = new int[10][10];
     Scanner scanner = new Scanner(System.in);
+
+    public Juego(){
+        tablero = new Tablero();
+        id = 2;
+    }
 
     public void jugar(){
         do {
-            if (id == 0){
-                System.out.println("Que ficha quieres mover?");
+            do {
+                tablero.dibujarTablero();
+                System.out.println("\u001B[0m"+"\nQue ficha quieres mover?");
                 System.out.println("Introduce la columna");
                 char col = scanner.next().toLowerCase().charAt(0);
                 int numbercol = 0;
@@ -53,10 +58,11 @@ public class Juego {
                 int fila = scanner.nextInt() - 1;
                 scanner.nextLine();
                 System.out.println("A donde la quieres mover?");
+                System.out.println("Introduce la columna");
                 char newcol = scanner.next().toLowerCase().charAt(0);
                 int newnumbercol = 0;
 
-                switch (col){
+                switch (newcol){
                     case 'a':
                         newnumbercol = 0;
                         break;
@@ -82,36 +88,36 @@ public class Juego {
                         newnumbercol = 7;
                         break;
                     case 'i':
-                        numbercol = 8;
+                        newnumbercol = 8;
                         break;
                     case 'j':
-                        numbercol = 9;
+                        newnumbercol = 9;
                         break;
                 }
                 System.out.println("Introduce la fila");
                 int newfila = scanner.nextInt()-1;
                 scanner.nextLine();
 
-                do {
-                    if (array[numbercol][fila] == 0) {
+
+                    if (tablero.getMesa()[fila][numbercol] == tablero.CASGRIS || tablero.getMesa()[fila][numbercol] == tablero.CASROJA) {
                         System.out.println("No hay ninguna ficha en esa posición");
                     }
-                    else if (array[numbercol][fila] == 2){
+                    else if (tablero.getMesa()[fila][numbercol] != id){
                         System.out.println("Esa ficha no es tuya");
                     }
-                    else if (array[numbercol][fila] == 1){
-                        if (array[newnumbercol][newfila] == 1) {
+                    else if (tablero.getMesa()[fila][numbercol] == id){
+                        if (tablero.getMesa()[newfila][newnumbercol] != tablero.CASROJA) {
                             System.out.println("No puedes mover ahi");
                         }
-                        else if (array[newcol][newfila] == 0) {
-                            array[numbercol][fila] = 0;
-                            array[newnumbercol][newfila] = 1;
+                        else if (tablero.getMesa()[newfila][newnumbercol] == tablero.CASROJA) {
+                            tablero.getMesa()[fila][numbercol] = tablero.CASROJA;
+                            tablero.getMesa()[newfila][newnumbercol] = id;
                             correctplay = true;
                         }
                     }
                 }
                 while(!correctplay);
-            }
+
         }
         while (!finished);
     }

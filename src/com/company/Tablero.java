@@ -3,15 +3,19 @@ package com.company;
 public class Tablero {
 
     private int[][] mesa = new int[10][10];
-    private final int CASGRIS = 0;
-    private final int CASROJA = 1;
-    private final int FICAZUL = 2;
-    private final int FICAMARILLO = 3;
+    public final int CASGRIS = 0;
+    public final int CASROJA = 1;
+    public final int FICAZUL = 2;
+    public final int FICAMARILLO = 3;
 
     private final String[] simbolos = {"\u001B[37m⬛","\u001B[31m⬛","\u001B[34m⚫","\u001B[33m⚫"};
     private final String[] letras = {"\u001B[37mⒶ","\u001B[31mⒷ","\u001B[37mⒸ","\u001B[31mⒹ","\u001B[37mⒺ","\u001B[31mⒻ","\u001B[37mⒼ","\u001B[31mⒽ","\u001B[37mⒾ","\u001B[31mⒿ"};
     public Tablero(){
         pintarCasillas();
+    }
+
+    public int[][] getMesa() {
+        return mesa;
     }
 
     public void dibujarTablero(){
