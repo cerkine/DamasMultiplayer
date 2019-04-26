@@ -18,6 +18,7 @@ public class Cliente {
     int serverPort;
     DatagramSocket socket;
     Scanner sc;
+    String jugada;
 
     public Cliente() {
         sc = new Scanner(System.in);
@@ -32,10 +33,9 @@ public class Cliente {
     public int selectPlayer(String nom) throws IOException {
         byte [] receivedData = new byte[1024];
         byte [] sendingData;
-        String player = "";
+        String player;
 
         sendingData = nom.getBytes();
-        System.out.println(sendingData);
         DatagramPacket packet = new DatagramPacket(sendingData,sendingData.length,serverIP,serverPort);
         socket.send(packet);
         packet = new DatagramPacket(receivedData,1024);
@@ -46,29 +46,35 @@ public class Cliente {
         return Integer.valueOf(player);
     }
 
-    public void runClient(int newfila, int newnumbercol) throws IOException {
+    public void runClient(int fila, int numbercol, int newfila, int newnumbercol, Tablero tablero) throws IOException {
         byte [] receivedData = new byte[1024];
         byte [] sendingData;
 
-        sendingData = (String.valueOf(newfila) + String.valueOf(newnumbercol)).getBytes();
+        sendingData = (String.valueOf(fila) + String.valueOf(numbercol) + String.valueOf(newfila) + String.valueOf(newnumbercol)).getBytes();
         System.out.println(sendingData);
-        while (mustContinue(sendingData)) {
-            DatagramPacket packet = new DatagramPacket(sendingData,sendingData.length,serverIP,serverPort);
-            socket.send(packet);
-            packet = new DatagramPacket(receivedData,1024);
-            socket.receive(packet);
-            sendingData = getDataToRequest(packet.getData(), packet.getLength());
-        }
+        DatagramPacket packet = new DatagramPacket(sendingData,sendingData.length,serverIP,serverPort);
+        socket.send(packet);
+        packet = new DatagramPacket(receivedData,1024);
+        socket.receive(packet);
+        sendingData = getDataToRequest(packet.getData(), packet.getLength());
+        tablero.actualizarJugada(jugada);
+
+
+
 
     }
 
     private byte[] getDataToRequest(byte[] data, int length) {
         String rebut = new String(data,0, length);
-        int fila = rebut.charAt(0);
-        int columna = rebut.charAt(1);
+        char[] arrayRebut = rebut.toCharArray();
+        int oldfila = (int) arrayRebut[0];
+        int oldcolumna = (int) arrayRebut[1];
+        int newfila = (int) arrayRebut[2];
+        int newcolumna = (int) arrayRebut[3];
+
         //Imprimeix el nom del client + el que es reb del server i demana més dades
-        System.out.print(fila + columna);
-        String msg = "prueba";
+        String msg = String.valueOf(oldfila)+String.valueOf(oldcolumna)+String.valueOf(newfila)+String.valueOf(newcolumna);
+        jugada = msg;
         return msg.getBytes();
     }
 

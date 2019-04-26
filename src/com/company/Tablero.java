@@ -30,6 +30,18 @@ public class Tablero {
             System.out.print(" "+letras[i]);
         }
     }
+
+    public void actualizarJugada(String jugada){
+
+        char[] arrayRebut = jugada.toCharArray();
+        int oldfila = (int) arrayRebut[0];
+        int oldcolumna = (int) arrayRebut[1];
+        int newfila = (int) arrayRebut[2];
+        int newcolumna = (int) arrayRebut[3];
+
+
+    }
+
     private void pintarCasillas(){
         for (int i = 0; i < mesa.length; i++) {
             for (int j = 0; j < mesa.length; j++) {

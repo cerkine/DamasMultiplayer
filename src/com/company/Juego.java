@@ -38,7 +38,7 @@ public class Juego {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        do {
+
             do {
                 tablero.dibujarTablero();
                 System.out.println("\u001B[0m"+"\nQue ficha quieres mover?");
@@ -138,7 +138,8 @@ public class Juego {
                             tablero.getMesa()[newfila][newnumbercol] = id;
                             correctplay = true;
                             try {
-                                cliente.runClient(newfila, newnumbercol);
+                                cliente.runClient(fila, numbercol, newfila, newnumbercol, tablero);
+
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -148,7 +149,6 @@ public class Juego {
                 while(!correctplay);
 
         }
-        while (!finished);
     }
 
-}
+

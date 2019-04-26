@@ -9,13 +9,11 @@ import java.net.SocketException;
 
 public class Server {
     DatagramSocket socket;
-    boolean player1, player2;
+    boolean player1, player2, notEmpty;
 
     //Instàciar el socket
     public void init(int port) throws SocketException {
         socket = new DatagramSocket(port);
-        player1 = true;
-        player2 = true;
     }
 
     public void runServer() throws IOException {
@@ -28,7 +26,7 @@ public class Server {
             DatagramPacket packet = new DatagramPacket(receivingData,1024);
             socket.receive(packet);
             sendingData = processData(packet.getData(),packet.getLength());
-            if (!player1 && player2){
+            if (notEmpty){
                 if (!player1) {
                     sendingData = "2".getBytes();
                     //Llegim el port i l'adreça del client per on se li ha d'enviar la resposta
@@ -37,6 +35,7 @@ public class Server {
                     packet = new DatagramPacket(sendingData, sendingData.length, clientIP, clientPort);
                     socket.send(packet);
                     player1 = true;
+                    notEmpty = false;
                 }
                 else if (!player2){
                     sendingData = "3".getBytes();
@@ -48,15 +47,22 @@ public class Server {
                     player2 = true;
                 }
             }
+            if (player1 && player2){
+                //Llegim el port i l'adreça del client per on se li ha d'enviar la resposta
+                clientIP = packet.getAddress();
+                clientPort = packet.getPort();
+                packet = new DatagramPacket(sendingData,sendingData.length,clientIP,clientPort);
+                socket.send(packet);
+            }
         }
     }
 
     private byte[] processData(byte[] data, int lenght) {
         String msg = new String(data,0,lenght);
-        //Imprimir el missatge rebut i retornar-lo
-        if (!msg.isEmpty()){
-
+        if (!msg.isEmpty() && !msg.matches(".*\\d.*")){
+            notEmpty = true;
         }
+        System.out.println(msg);
         return msg.getBytes();
     }
 
