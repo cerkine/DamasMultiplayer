@@ -18,7 +18,6 @@ public class Cliente {
     int serverPort;
     DatagramSocket socket;
     Scanner sc;
-    String nom;
 
     public Cliente() {
         sc = new Scanner(System.in);
@@ -30,11 +29,29 @@ public class Cliente {
         socket = new DatagramSocket();
     }
 
-    public void runClient() throws IOException {
+    public int selectPlayer(String nom) throws IOException {
+        byte [] receivedData = new byte[1024];
+        byte [] sendingData;
+        String player = "";
+
+        sendingData = nom.getBytes();
+        System.out.println(sendingData);
+        DatagramPacket packet = new DatagramPacket(sendingData,sendingData.length,serverIP,serverPort);
+        socket.send(packet);
+        packet = new DatagramPacket(receivedData,1024);
+        socket.receive(packet);
+        player = new String(packet.getData(),0, packet.getLength());
+
+
+        return Integer.valueOf(player);
+    }
+
+    public void runClient(int newfila, int newnumbercol) throws IOException {
         byte [] receivedData = new byte[1024];
         byte [] sendingData;
 
-        sendingData = getFirstRequest();
+        sendingData = (String.valueOf(newfila) + String.valueOf(newnumbercol)).getBytes();
+        System.out.println(sendingData);
         while (mustContinue(sendingData)) {
             DatagramPacket packet = new DatagramPacket(sendingData,sendingData.length,serverIP,serverPort);
             socket.send(packet);
@@ -47,16 +64,19 @@ public class Cliente {
 
     private byte[] getDataToRequest(byte[] data, int length) {
         String rebut = new String(data,0, length);
+        int fila = rebut.charAt(0);
+        int columna = rebut.charAt(1);
         //Imprimeix el nom del client + el que es reb del server i demana més dades
-        System.out.print(nom+"("+rebut+")"+"> ");
-        String msg = sc.nextLine();
+        System.out.print(fila + columna);
+        String msg = "prueba";
         return msg.getBytes();
     }
 
-    private byte[] getFirstRequest() {
-        System.out.println("Entra el teu nom: ");
-        nom = sc.nextLine();
-        return nom.getBytes();
+    private byte[] getPlayertoRequest(byte[] data, int length) {
+        String rebut = new String(data,0, length);
+        //Imprimeix el nom del client + el que es reb del server i demana més dades
+        String msg = rebut;
+        return msg.getBytes();
     }
 
     private boolean mustContinue(byte [] data) {

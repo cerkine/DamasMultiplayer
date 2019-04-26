@@ -1,19 +1,43 @@
 package com.company;
 
+import java.io.IOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Juego {
     Tablero tablero;
     int id;
     boolean finished, correctplay;
-    Scanner scanner = new Scanner(System.in);
+    Scanner scanner;
+    Cliente cliente;
 
     public Juego(){
         tablero = new Tablero();
         id = 2;
+        scanner = new Scanner(System.in);
+        cliente = new Cliente();
     }
 
     public void jugar(){
+        try {
+            cliente.init("localhost", 5555);
+            System.out.println("Como te llamas?");
+            String name = scanner.nextLine();
+            id = cliente.selectPlayer(name);
+            if (id == tablero.FICAMARILLO){
+                System.out.println("Bienvenido! Eres las amarillas");
+            }
+            else if (id == tablero.FICAZUL){
+                System.out.println("Bienvenido! Eres las azules");
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         do {
             do {
                 tablero.dibujarTablero();
@@ -113,6 +137,11 @@ public class Juego {
                             tablero.getMesa()[fila][numbercol] = tablero.CASROJA;
                             tablero.getMesa()[newfila][newnumbercol] = id;
                             correctplay = true;
+                            try {
+                                cliente.runClient(newfila, newnumbercol);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
