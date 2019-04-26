@@ -65,4 +65,16 @@ public class Tablero {
             }
         }
     }
+    public boolean checkWinner(){
+        int contadorAmarillo =0;
+        int contadorAzul = 0;
+        for (int i = 0; i < mesa.length; i++) {
+            for (int j = 0; j < mesa.length; j++) {
+                if (mesa[i][j] == FICAMARILLO)contadorAmarillo++;
+                else if (mesa[i][j] == FICAZUL)contadorAzul++;
+            }
+        }
+        if (contadorAmarillo == 0 || contadorAzul == 0)return true;
+        return false;
+    }
 }
