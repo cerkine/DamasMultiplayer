@@ -30,6 +30,16 @@ public class Cliente {
         socket = new DatagramSocket();
     }
 
+    public String getJugada() throws IOException {
+        byte [] receivedData = new byte[1024];
+        byte [] sendingData;
+
+        DatagramPacket packet = new DatagramPacket(receivedData,1024);
+        socket.receive(packet);
+        sendingData = getDataToRequest(packet.getData(), packet.getLength());
+        return jugada;
+    }
+
     public int selectPlayer(String nom) throws IOException {
         byte [] receivedData = new byte[1024];
         byte [] sendingData;
@@ -46,19 +56,13 @@ public class Cliente {
         return Integer.valueOf(player);
     }
 
-    public void runClient(int fila, int numbercol, int newfila, int newnumbercol, Tablero tablero) throws IOException {
+    public void runClient(int fila, int numbercol, int newfila, int newnumbercol) throws IOException {
         byte [] receivedData = new byte[1024];
         byte [] sendingData;
 
         sendingData = (String.valueOf(fila) + String.valueOf(numbercol) + String.valueOf(newfila) + String.valueOf(newnumbercol)).getBytes();
-        System.out.println(sendingData);
         DatagramPacket packet = new DatagramPacket(sendingData,sendingData.length,serverIP,serverPort);
         socket.send(packet);
-        packet = new DatagramPacket(receivedData,1024);
-        socket.receive(packet);
-        sendingData = getDataToRequest(packet.getData(), packet.getLength());
-        tablero.actualizarJugada(jugada);
-
 
 
 

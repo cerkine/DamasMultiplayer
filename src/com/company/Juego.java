@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Juego {
     Tablero tablero;
-    int id;
+    int id,rival;
     boolean finished, correctplay;
     Scanner scanner;
     Cliente cliente;
@@ -20,16 +20,17 @@ public class Juego {
         cliente = new Cliente();
     }
 
-    public void movimiento(){
+    public void movimiento() {
         try {
             cliente.init("localhost", 5555);
             System.out.println("Como te llamas?");
             String name = scanner.nextLine();
             id = cliente.selectPlayer(name);
-            if (id == tablero.FICAMARILLO){
+            if (id == tablero.FICAMARILLO) {
+                rival = tablero.FICAZUL;
                 System.out.println("Bienvenido! Eres las amarillas");
-            }
-            else if (id == tablero.FICAZUL){
+            } else if (id == tablero.FICAZUL) {
+                rival = tablero.FICAMARILLO;
                 System.out.println("Bienvenido! Eres las azules");
             }
         } catch (SocketException e) {
@@ -39,43 +40,71 @@ public class Juego {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (id==tablero.FICAMARILLO){
+            esperajugada();
+        }
+        do {
 
-            do {
-                tablero.dibujarTablero();
-                System.out.println("\u001B[0m" + "\nQue ficha quieres mover?");
-                System.out.println("Introduce la columna");
-                char col = scanner.next().toLowerCase().charAt(0);
-                int numbercol = 0;
+            tablero.dibujarTablero();
+            System.out.println("\u001B[0m" + "\nQue ficha quieres mover?");
+            System.out.println("Introduce la columna");
+            char col = scanner.next().toLowerCase().charAt(0);
+            int numbercol = 0;
 
-                numbercol = getNumbercol(col, numbercol);
-                System.out.println("Introduce la fila");
-                int fila = scanner.nextInt() - 1;
-                scanner.nextLine();
-                System.out.println("A donde la quieres mover?");
-                System.out.println("Introduce la columna");
-                char newcol = scanner.next().toLowerCase().charAt(0);
-                int newnumbercol = 0;
+            numbercol = getNumbercol(col, numbercol);
+            System.out.println("Introduce la fila");
+            int fila = scanner.nextInt() - 1;
+            scanner.nextLine();
+            System.out.println("A donde la quieres mover?");
+            System.out.println("Introduce la columna");
+            char newcol = scanner.next().toLowerCase().charAt(0);
+            int newnumbercol = 0;
 
-                newnumbercol = getNumbercol(newcol, newnumbercol);
-                System.out.println("Introduce la fila");
-                int newfila = scanner.nextInt() - 1;
-                scanner.nextLine();
-                if (checkPropietario(numbercol, fila, newnumbercol, newfila) &&checkMovimiento(numbercol, fila, newnumbercol, newfila)) {
+            newnumbercol = getNumbercol(newcol, newnumbercol);
+            System.out.println("Introduce la fila");
+            int newfila = scanner.nextInt() - 1;
+            scanner.nextLine();
+            if (checkPropietario(numbercol, fila, newnumbercol, newfila) && checkMovimiento(numbercol, fila, newnumbercol, newfila)) {
 
-                        tablero.getMesa()[fila][numbercol] = tablero.CASROJA;
-                        tablero.getMesa()[newfila][newnumbercol] = id;
-                        correctplay = true;
-                        if (id == tablero.FICAZUL)id = tablero.FICAMARILLO;
-                        else id=tablero.FICAZUL;
-
+                tablero.getMesa()[fila][numbercol] = tablero.CASROJA;
+                tablero.getMesa()[newfila][newnumbercol] = id;
+                correctplay = true;
+                try {
+                    cliente.runClient(fila, numbercol, newfila, newnumbercol);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            }
+//                if (id == tablero.FICAZUL) id = tablero.FICAMARILLO;
+//                else id = tablero.FICAZUL;
 
-            while (!correctplay);
+            }
+        }
+
+        while (!correctplay);
+        if (id == tablero.FICAZUL)esperajugada();
+    }
+
+    private void esperajugada() {
+        String jugada = null;
+        try {
+            jugada = cliente.getJugada();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        char[] arrayRebut = jugada.toCharArray();
+        int oldfila = (int) arrayRebut[0];
+        int oldcolumna = (int) arrayRebut[1];
+        int newfila = (int) arrayRebut[2];
+        int newcolumna = (int) arrayRebut[3];
+
+        if (checkPropietario(oldcolumna,oldfila,newcolumna,newfila) &&
+        checkMovimiento(oldcolumna,oldfila,newcolumna,newfila)){
+            tablero.getMesa()[oldfila][oldcolumna] = tablero.CASROJA;
+            tablero.getMesa()[newfila][newcolumna] = rival;
 
         }
-        while (!tablero.checkWinner());
     }
+
 
     private int getNumbercol(char col, int numbercol) {
         switch (col) {
@@ -172,5 +201,7 @@ public class Juego {
         }
         return true;
     }
+
+}
 
 

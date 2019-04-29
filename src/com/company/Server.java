@@ -17,12 +17,17 @@ public class Server {
     }
 
     public void runServer() throws IOException {
+
+        elegirjugador();
+        jugar();
+
+    }
+    private void elegirjugador() throws IOException {
         byte [] receivingData = new byte[1024];
         byte [] sendingData;
         InetAddress clientIP;
         int clientPort;
-
-        while(true) {
+        while(!player1 || !player2) {
             DatagramPacket packet = new DatagramPacket(receivingData,1024);
             socket.receive(packet);
             sendingData = processData(packet.getData(),packet.getLength());
@@ -47,16 +52,28 @@ public class Server {
                     player2 = true;
                 }
             }
-            if (player1 && player2){
-                //Llegim el port i l'adreça del client per on se li ha d'enviar la resposta
-                clientIP = packet.getAddress();
-                clientPort = packet.getPort();
-                packet = new DatagramPacket(sendingData,sendingData.length,clientIP,clientPort);
-                socket.send(packet);
-            }
         }
     }
 
+    public void jugar() throws IOException {
+        byte [] receivingData = new byte[1024];
+        byte [] sendingData;
+        InetAddress clientIP;
+        int clientPort;
+
+        DatagramPacket packet = new DatagramPacket(receivingData,1024);
+        socket.receive(packet);
+        sendingData = processData(packet.getData(),packet.getLength());
+
+        if (player1 && player2){
+            //Llegim el port i l'adreça del client per on se li ha d'enviar la resposta
+            clientIP = packet.getAddress();
+            clientPort = packet.getPort();
+            packet = new DatagramPacket(sendingData,sendingData.length,clientIP,clientPort);
+            socket.send(packet);
+            System.out.println(new String(sendingData,0, sendingData.length));
+        }
+    }
     private byte[] processData(byte[] data, int lenght) {
         String msg = new String(data,0,lenght);
         if (!msg.isEmpty() && !msg.matches(".*\\d.*")){
