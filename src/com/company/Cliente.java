@@ -37,6 +37,7 @@ public class Cliente {
         DatagramPacket packet = new DatagramPacket(receivedData,1024);
         socket.receive(packet);
         sendingData = getDataToRequest(packet.getData(), packet.getLength());
+
         return jugada;
     }
 
@@ -70,16 +71,12 @@ public class Cliente {
 
     private byte[] getDataToRequest(byte[] data, int length) {
         String rebut = new String(data,0, length);
-        char[] arrayRebut = rebut.toCharArray();
-        int oldfila = (int) arrayRebut[0];
-        int oldcolumna = (int) arrayRebut[1];
-        int newfila = (int) arrayRebut[2];
-        int newcolumna = (int) arrayRebut[3];
 
         //Imprimeix el nom del client + el que es reb del server i demana més dades
-        String msg = String.valueOf(oldfila)+String.valueOf(oldcolumna)+String.valueOf(newfila)+String.valueOf(newcolumna);
-        jugada = msg;
-        return msg.getBytes();
+
+        jugada = rebut;
+
+        return rebut.getBytes();
     }
 
     private byte[] getPlayertoRequest(byte[] data, int length) {

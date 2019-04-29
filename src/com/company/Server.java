@@ -10,6 +10,7 @@ import java.net.SocketException;
 public class Server {
     DatagramSocket socket;
     boolean player1, player2, notEmpty;
+    InetAddress client1ip,client2ip;
 
     //Instàciar el socket
     public void init(int port) throws SocketException {
@@ -35,9 +36,9 @@ public class Server {
                 if (!player1) {
                     sendingData = "2".getBytes();
                     //Llegim el port i l'adreça del client per on se li ha d'enviar la resposta
-                    clientIP = packet.getAddress();
+                    client1ip = packet.getAddress();
                     clientPort = packet.getPort();
-                    packet = new DatagramPacket(sendingData, sendingData.length, clientIP, clientPort);
+                    packet = new DatagramPacket(sendingData, sendingData.length, client1ip, clientPort);
                     socket.send(packet);
                     player1 = true;
                     notEmpty = false;
@@ -45,9 +46,9 @@ public class Server {
                 else if (!player2){
                     sendingData = "3".getBytes();
                     //Llegim el port i l'adreça del client per on se li ha d'enviar la resposta
-                    clientIP = packet.getAddress();
+                    client2ip = packet.getAddress();
                     clientPort = packet.getPort();
-                    packet = new DatagramPacket(sendingData, sendingData.length, clientIP, clientPort);
+                    packet = new DatagramPacket(sendingData, sendingData.length, client2ip, clientPort);
                     socket.send(packet);
                     player2 = true;
                 }
@@ -69,6 +70,8 @@ public class Server {
             //Llegim el port i l'adreça del client per on se li ha d'enviar la resposta
             clientIP = packet.getAddress();
             clientPort = packet.getPort();
+            if (clientIP == client1ip)clientIP =client2ip;
+            else clientIP = client1ip;
             packet = new DatagramPacket(sendingData,sendingData.length,clientIP,clientPort);
             socket.send(packet);
             System.out.println(new String(sendingData,0, sendingData.length));

@@ -3,6 +3,7 @@ package com.company;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class Juego {
@@ -91,11 +92,11 @@ public class Juego {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        char[] arrayRebut = jugada.toCharArray();
-        int oldfila = (int) arrayRebut[0];
-        int oldcolumna = (int) arrayRebut[1];
-        int newfila = (int) arrayRebut[2];
-        int newcolumna = (int) arrayRebut[3];
+
+        int oldfila = Integer.parseInt( String.valueOf(jugada.charAt(0)));
+        int oldcolumna = Integer.parseInt( String.valueOf(jugada.charAt(1)));
+        int newfila = Integer.parseInt( String.valueOf(jugada.charAt(2)));
+        int newcolumna = Integer.parseInt( String.valueOf(jugada.charAt(3)));
 
         if (checkPropietario(oldcolumna,oldfila,newcolumna,newfila) &&
         checkMovimiento(oldcolumna,oldfila,newcolumna,newfila)){
@@ -187,6 +188,7 @@ public class Juego {
     }
 
     private boolean checkPropietario(int numbercol, int fila, int newnumbercol, int newfila) {
+
         if (tablero.getMesa()[fila][numbercol] == tablero.CASGRIS || tablero.getMesa()[fila][numbercol] == tablero.CASROJA) {
             System.out.println("No hay ninguna ficha en esa posición");
             return false;
