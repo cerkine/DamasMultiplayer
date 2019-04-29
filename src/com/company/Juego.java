@@ -22,7 +22,7 @@ public class Juego {
     }
     public void conexion(){
         try {
-            cliente.init("localhost", 5555);
+            cliente.init("192.168.253.229", 5555);
             System.out.println("Como te llamas?");
             String name = scanner.nextLine();
             id = cliente.selectPlayer(name);
@@ -52,24 +52,27 @@ public class Juego {
         }
 
         do {
-            System.out.println("\u001B[0m" + "\nQue ficha quieres mover?");
-            System.out.println("Introduce la columna");
-            char col = scanner.next().toLowerCase().charAt(0);
-            int numbercol = 0;
+            int numbercol = 11;
+            int newnumbercol = 11;
+            int fila;
+            int newfila;
 
-            numbercol = getNumbercol(col, numbercol);
-            System.out.println("Introduce la fila");
-            int fila = scanner.nextInt() - 1;
-            scanner.nextLine();
-            System.out.println("A donde la quieres mover?");
-            System.out.println("Introduce la columna");
-            char newcol = scanner.next().toLowerCase().charAt(0);
-            int newnumbercol = 0;
+            do {
+                System.out.println("\u001B[0m" + "\nQue ficha quieres mover? Introducelo en este orden: Columna Antigua-Fila antigua- Columna Nueva-Fila Nueva Ej: j7i6");
+                String jugada = scanner.nextLine();
 
-            newnumbercol = getNumbercol(newcol, newnumbercol);
-            System.out.println("Introduce la fila");
-            int newfila = scanner.nextInt() - 1;
-            scanner.nextLine();
+                char col = jugada.toLowerCase().charAt(0);
+                numbercol = getNumbercol(col);
+
+                fila = Integer.parseInt(String.valueOf(jugada.toLowerCase().charAt(1))) - 1;
+
+                char newcol = jugada.toLowerCase().charAt(2);
+                newnumbercol = getNumbercol(newcol);
+
+                newfila = Integer.parseInt(String.valueOf(jugada.toLowerCase().charAt(3))) - 1;
+
+            }while (numbercol == 11 || newnumbercol == 11);
+
             if (checkPropietario(numbercol, fila, newnumbercol, newfila) && checkMovimiento(numbercol, fila, newnumbercol, newfila)) {
 
                 tablero.getMesa()[fila][numbercol] = tablero.CASROJA;
@@ -80,11 +83,11 @@ public class Juego {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-//                if (id == tablero.FICAZUL) id = tablero.FICAMARILLO;
-//                else id = tablero.FICAZUL;
 
             }
-            tablero.dibujarTablero();
+            if (id == tablero.FICAZUL) {
+                tablero.dibujarTablero();
+            }
         } while (!correctplay);
 
 
@@ -116,40 +119,30 @@ public class Juego {
     }
 
 
-    private int getNumbercol(char col, int numbercol) {
+    private int getNumbercol(char col) {
         switch (col) {
             case 'a':
-                numbercol = 0;
-                break;
+                return  0;
             case 'b':
-                numbercol = 1;
-                break;
+                return 1;
             case 'c':
-                numbercol = 2;
-                break;
+                return 2;
             case 'd':
-                numbercol = 3;
-                break;
+                return 3;
             case 'e':
-                numbercol = 4;
-                break;
+                return 4;
             case 'f':
-                numbercol = 5;
-                break;
+                return 5;
             case 'g':
-                numbercol = 6;
-                break;
+                return 6;
             case 'h':
-                numbercol = 7;
-                break;
+                return 7;
             case 'i':
-                numbercol = 8;
-                break;
+                return 8;
             case 'j':
-                numbercol = 9;
-                break;
+                return 9;
         }
-        return numbercol;
+        return 11;
     }
 
     private boolean checkMovimiento(int numbercol, int fila, int newnumbercol, int newfila) {
@@ -162,7 +155,6 @@ public class Juego {
                                 && tablero.getMesa()[newfila][newnumbercol] == tablero.CASROJA) {
                             int borrar = (newnumbercol - numbercol) /2;
                             tablero.getMesa()[fila-comprobacion/2][numbercol+borrar]=tablero.CASROJA;
-                            System.out.println("correcto");
                             return true;
                         }
                     } else if ((tablero.getMesa()[fila - comprobacion/2][numbercol - (newnumbercol- numbercol)/2] == tablero.FICAMARILLO
@@ -170,14 +162,13 @@ public class Juego {
                             && tablero.getMesa()[newfila][newnumbercol] == tablero.CASROJA) {
                         int borrar = (newnumbercol - numbercol) /2;
                         tablero.getMesa()[fila-comprobacion/2][numbercol+borrar]=tablero.CASROJA;
-                        System.out.println("correcto");
                         return true;
                     } else {
                         System.out.println("No puedes moverte dos no hay nada que comer");
                         return false;
                     }
                 } else if (comprobacion == 1 || comprobacion == -1) {
-                    if (tablero.getMesa()[newfila][newnumbercol] == tablero.CASROJA) System.out.println("correcto");
+                    if (tablero.getMesa()[newfila][newnumbercol] == tablero.CASROJA)
                     return true;
                 } else {
                     System.out.println("La distancia no es correcta");
@@ -188,7 +179,6 @@ public class Juego {
             System.out.println("No te puedes mover hacia atras");
         }
 
-        System.out.println("mal");
         return false;
     }
 
