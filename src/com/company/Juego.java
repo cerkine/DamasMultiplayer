@@ -45,13 +45,13 @@ public class Juego {
     public void movimiento() {
         tablero.dibujarTablero();
         if (id==tablero.FICAMARILLO){
+            System.out.println();
             System.out.println("ESPERANDO JUGADA");
             esperajugada();
+            tablero.dibujarTablero();
         }
 
         do {
-
-
             System.out.println("\u001B[0m" + "\nQue ficha quieres mover?");
             System.out.println("Introduce la columna");
             char col = scanner.next().toLowerCase().charAt(0);
@@ -89,9 +89,9 @@ public class Juego {
 
 
         if (id == tablero.FICAZUL){
-            System.out.println("pepe");
+            System.out.println();
+            System.out.println("ESPERANDO JUGADA");
             esperajugada();
-            System.out.println("jose");
         }
     }
 

@@ -35,9 +35,9 @@ public class Cliente {
         byte [] sendingData;
 
         DatagramPacket packet = new DatagramPacket(receivedData,1024);
-        System.out.println("BEFORE");
+
         socket.receive(packet);
-        System.out.println("AFTER");
+
         sendingData = getDataToRequest(packet.getData(), packet.getLength());
 
         return jugada;
