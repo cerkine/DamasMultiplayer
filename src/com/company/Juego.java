@@ -43,6 +43,7 @@ public class Juego {
         }
         if (id==tablero.FICAMARILLO){
             esperajugada();
+            System.out.println("ppe");
         }
         do {
 
@@ -82,7 +83,11 @@ public class Juego {
         }
 
         while (!correctplay);
-        if (id == tablero.FICAZUL)esperajugada();
+        if (id == tablero.FICAZUL){
+            System.out.println("pepe");
+            esperajugada();
+            System.out.println("jose");
+        }
     }
 
     private void esperajugada() {

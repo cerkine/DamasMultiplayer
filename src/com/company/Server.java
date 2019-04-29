@@ -69,9 +69,16 @@ public class Server {
         if (player1 && player2){
             //Llegim el port i l'adreça del client per on se li ha d'enviar la resposta
             clientIP = packet.getAddress();
+            System.out.println(clientIP);
             clientPort = packet.getPort();
-            if (clientIP == client1ip)clientIP =client2ip;
-            else clientIP = client1ip;
+            if (clientIP.equals(client1ip)){
+
+                clientIP =client2ip;
+            }else{
+
+                clientIP = client1ip;}
+
+            System.out.println(clientIP);
             packet = new DatagramPacket(sendingData,sendingData.length,clientIP,clientPort);
             socket.send(packet);
             System.out.println(new String(sendingData,0, sendingData.length));
