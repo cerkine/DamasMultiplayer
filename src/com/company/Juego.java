@@ -41,7 +41,9 @@ public class Juego {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         if (id==tablero.FICAMARILLO){
+            System.out.println("SI ES AMARILLO");
             esperajugada();
             System.out.println("ppe");
         }
@@ -80,9 +82,9 @@ public class Juego {
 //                else id = tablero.FICAZUL;
 
             }
-        }
+        } while (!correctplay);
 
-        while (!correctplay);
+
         if (id == tablero.FICAZUL){
             System.out.println("pepe");
             esperajugada();

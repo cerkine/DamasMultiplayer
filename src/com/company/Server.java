@@ -11,6 +11,7 @@ public class Server {
     DatagramSocket socket;
     boolean player1, player2, notEmpty;
     InetAddress client1ip,client2ip;
+    int port1client,port2client;
 
     //Instàciar el socket
     public void init(int port) throws SocketException {
@@ -20,7 +21,9 @@ public class Server {
     public void runServer() throws IOException {
 
         elegirjugador();
-        jugar();
+        do {
+            jugar();
+        }while (true);
 
     }
     private void elegirjugador() throws IOException {
@@ -42,6 +45,8 @@ public class Server {
                     socket.send(packet);
                     player1 = true;
                     notEmpty = false;
+                    System.out.println("azul port " + clientPort);
+                    port1client = clientPort;
                 }
                 else if (!player2){
                     sendingData = "3".getBytes();
@@ -51,6 +56,8 @@ public class Server {
                     packet = new DatagramPacket(sendingData, sendingData.length, client2ip, clientPort);
                     socket.send(packet);
                     player2 = true;
+                    System.out.println("amarillo port " + clientPort);
+                    port2client = clientPort;
                 }
             }
         }
@@ -69,13 +76,14 @@ public class Server {
         if (player1 && player2){
             //Llegim el port i l'adreça del client per on se li ha d'enviar la resposta
             clientIP = packet.getAddress();
-            System.out.println(clientIP);
             clientPort = packet.getPort();
+            System.out.println(clientIP);
+            System.out.println("RECEIVEEDDDD " + clientPort);
             if (clientIP.equals(client1ip)){
-
+                clientPort =port2client;
                 clientIP =client2ip;
             }else{
-
+                clientPort = port1client;
                 clientIP = client1ip;}
 
             System.out.println(clientIP);
