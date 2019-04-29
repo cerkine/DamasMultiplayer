@@ -20,8 +20,7 @@ public class Juego {
         scanner = new Scanner(System.in);
         cliente = new Cliente();
     }
-
-    public void movimiento() {
+    public void conexion(){
         try {
             cliente.init("localhost", 5555);
             System.out.println("Como te llamas?");
@@ -42,14 +41,17 @@ public class Juego {
             e.printStackTrace();
         }
 
+    }
+    public void movimiento() {
+        tablero.dibujarTablero();
         if (id==tablero.FICAMARILLO){
-            System.out.println("SI ES AMARILLO");
+            System.out.println("ESPERANDO JUGADA");
             esperajugada();
-            System.out.println("ppe");
         }
+
         do {
 
-            tablero.dibujarTablero();
+
             System.out.println("\u001B[0m" + "\nQue ficha quieres mover?");
             System.out.println("Introduce la columna");
             char col = scanner.next().toLowerCase().charAt(0);
@@ -82,6 +84,7 @@ public class Juego {
 //                else id = tablero.FICAZUL;
 
             }
+            tablero.dibujarTablero();
         } while (!correctplay);
 
 
@@ -105,8 +108,7 @@ public class Juego {
         int newfila = Integer.parseInt( String.valueOf(jugada.charAt(2)));
         int newcolumna = Integer.parseInt( String.valueOf(jugada.charAt(3)));
 
-        if (checkPropietario(oldcolumna,oldfila,newcolumna,newfila) &&
-        checkMovimiento(oldcolumna,oldfila,newcolumna,newfila)){
+        if (checkMovimiento(oldcolumna,oldfila,newcolumna,newfila)){
             tablero.getMesa()[oldfila][oldcolumna] = tablero.CASROJA;
             tablero.getMesa()[newfila][newcolumna] = rival;
 
@@ -152,10 +154,6 @@ public class Juego {
 
     private boolean checkMovimiento(int numbercol, int fila, int newnumbercol, int newfila) {
         comprobacion = fila - newfila;
-//        if (id == tablero.FICAMARILLO){
-//            comprobacion = -comprobacion;
-//        }
-        if ((id==tablero.FICAMARILLO && comprobacion<0)|| (id==tablero.FICAZUL && comprobacion>0) ) {
             if (numbercol - newnumbercol == comprobacion || numbercol - newnumbercol == -comprobacion) {
                 if (comprobacion == 2 || comprobacion == -2) {
                     if (comprobacion < 0) {
@@ -185,7 +183,7 @@ public class Juego {
                     System.out.println("La distancia no es correcta");
                     return false;
                 }
-            }
+
         }else {
             System.out.println("No te puedes mover hacia atras");
         }
