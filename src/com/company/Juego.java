@@ -89,7 +89,7 @@ public class Juego {
                 tablero.dibujarTablero();
             }
         } while (!correctplay);
-
+        correctplay = false;
 
         if (id == tablero.FICAZUL){
             System.out.println();
