@@ -79,7 +79,7 @@ public class Server {
             clientPort = packet.getPort();
             System.out.println(clientIP);
             System.out.println("RECEIVEEDDDD " + clientPort);
-            if (clientIP.equals(client1ip)){
+            if (clientIP.equals(client1ip) && clientPort == port1client){
                 clientPort =port2client;
                 clientIP =client2ip;
             }else{
